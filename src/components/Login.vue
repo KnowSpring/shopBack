@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import axios from "axios";
+// import axios from "axios";
 export default {
   data() {
     return {
@@ -62,7 +62,7 @@ export default {
       },
       rules: {
         username: [
-          { required: true, message: "请输入账户", trigger: "blur" },
+          { required: true, message: "请输入用户名", trigger: "blur" },
           { min: 3, max: 6, message: "长度在 3 到 6 个字符", trigger: "blur" }
         ],
         password: [
@@ -74,22 +74,20 @@ export default {
   },
   methods: {
     login() {
-      axios
-        .post("http://localhost:8888/api/private/v1/login", this.loginForm)
-        .then(res => {
-          // ES6中的解构，意思就是从 res.data 中取出属性 data 和 meta
-          const { data, meta } = res.data;
-          if (meta.status === 200) {
-            localStorage.setItem("token", data.token);
-            this.$router.push("./home");
-          } else {
-            this.$message({
-              type: "error",
-              message: meta.msg,
-              duration: 1000
-            });
-          }
-        });
+      this.$http.post("/login", this.loginForm).then(res => {
+        // ES6中的解构，意思就是从 res.data 中取出属性 data 和 meta
+        const { data, meta } = res.data;
+        if (meta.status === 200) {
+          localStorage.setItem("token", data.token);
+          this.$router.push("./home");
+        } else {
+          this.$message({
+            type: "error",
+            message: meta.msg,
+            duration: 1000
+          });
+        }
+      });
     },
     onLoginSubmit() {
       //是否校验成功
