@@ -2,9 +2,9 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Login from '@/components/Login.vue'
 import Home from '@/components/Home.vue'
-import User from '@/components/User.vue'
+import User from '@/components/user/User.vue'
 import Right from '@/components/right/Right.vue'
-import Role from '@/components/Role/Role.vue'
+import Role from '@/components/role/Role.vue'
 // import HelloWorld from '@/components/HelloWorld'
 
 Vue.use(Router)
