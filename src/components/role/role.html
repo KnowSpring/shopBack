@@ -1,0 +1,133 @@
+<div>
+  <el-row>
+    <el-col>
+      <template>
+        <el-table :data="roleList" stripe style="width: 100%">
+          <!-- 展开行 -->
+          <el-table-column type="expand">
+            <template slot-scope="scoped">
+              <el-row v-if="scoped.row.children.length === 0">
+                <el-col>暂无权限，请分配</el-col>
+              </el-row>
+              <el-row
+                v-else
+                v-for=" level0 in scoped.row.children"
+                :key="level0.id"
+                class="row-level0"
+              >
+                <el-col :span="4">
+                  <el-tag
+                    @close="handleTagClose(scoped.row.id,level0.id)"
+                    closable
+                  >
+                    {{ level0.authName }}
+                  </el-tag>
+                </el-col>
+                <el-col :span="20">
+                  <el-row
+                    v-for="level1 in level0.children"
+                    :key="level1.id"
+                    class="row-level1"
+                  >
+                    <el-col :span="4">
+                      <el-tag
+                        closable
+                        type="success"
+                        @close="handleTagClose(scoped.row.id,level1.id)"
+                      >
+                        {{ level1.authName }}
+                      </el-tag>
+                    </el-col>
+                    <el-col :span="20">
+                      <el-tag
+                        @close="handleTagClose(scoped.row.id,level2.id)"
+                        class="tag-level2"
+                        v-for="level2 in level1.children"
+                        :key="level2.id"
+                        closable
+                        type="warning"
+                      >
+                        {{ level2.authName }}
+                      </el-tag>
+                    </el-col>
+                  </el-row>
+                </el-col>
+              </el-row>
+            </template>
+          </el-table-column>
+          <el-table-column type="index" width="50"> </el-table-column>
+          <el-table-column prop="roleName" label="角色名称" width="180">
+          </el-table-column>
+          <el-table-column prop="roleDesc" label="描述" width="180">
+          </el-table-column>
+          <el-table-column label="操作">
+            <template slot-scope="scope">
+              <el-button
+                type="primary"
+                icon="el-icon-edit"
+                size="mini"
+                plain
+                @click="showEditRolerDialog(scope.row)"
+              ></el-button>
+              <el-button
+                type="danger"
+                icon="el-icon-delete"
+                size="mini"
+                plain
+                @click="deleteRoleById(scope.row.id)"
+              ></el-button>
+              <el-button
+                type="success"
+                icon="el-icon-check"
+                size="mini"
+                plain
+                @click="showAssignRight(scope.row.children,scope.row.id)"
+                >分配权限</el-button
+              >
+            </template>
+          </el-table-column>
+        </el-table>
+      </template>
+    </el-col>
+  </el-row>
+  <!-- 编辑用户弹出框 -->
+  <el-dialog
+    title="编辑角色"
+    :visible.sync="editRoleDialog"
+    @close="closeEditRoleDialog"
+  >
+    <el-form :model="editRoleForm" ref="editRoleForm">
+      <el-form-item label="角色名称">
+        <el-input v-model="editRoleForm.roleName"></el-input>
+      </el-form-item>
+      <el-form-item label="角色描述">
+        <el-input v-model="editRoleForm.roleDesc"></el-input>
+      </el-form-item>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="editRoleDialog = false">取 消</el-button>
+      <el-button type="primary" @click="editRoleConfirm">确 定</el-button>
+    </div>
+  </el-dialog>
+  <!-- 分配权限弹出框 -->
+  <el-dialog
+    title="分配权限"
+    :visible.sync="assignRightDialog"
+    @close="closeAssignRightDialog"
+  >
+    <el-tree
+      ref="assignRight"
+      :data="rightTree"
+      show-checkbox
+      node-key="id"
+      :default-expand-all="true"
+      :props="defaultProps"
+    >
+    </el-tree>
+
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="editRoleDialog = false">取 消</el-button>
+      <el-button type="primary" @click="assignRightConfirm">确 定</el-button>
+    </div>
+  </el-dialog>
+</div>

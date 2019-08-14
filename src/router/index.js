@@ -4,6 +4,7 @@ import Login from '@/components/Login.vue'
 import Home from '@/components/Home.vue'
 import User from '@/components/User.vue'
 import Right from '@/components/right/Right.vue'
+import Role from '@/components/Role/Role.vue'
 // import HelloWorld from '@/components/HelloWorld'
 
 Vue.use(Router)
@@ -20,8 +21,12 @@ const router = new Router({
           component: User
         },
         {
-          path: 'right/Right',
+          path: 'right',
           component: Right
+        },
+        {
+          path: 'role',
+          component: Role
         }
       ]
     }
